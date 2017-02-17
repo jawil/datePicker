@@ -17,5 +17,5 @@
 
 
 ####效果图
-<img src="http://i65.tinypic.com/aawy1k.jpg"/>
+<img src="http://i65.tinypic.com/aawy1k.jpg"/ width="50%" height="50%">
 
