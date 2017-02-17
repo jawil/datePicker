@@ -1,6 +1,7 @@
 ####仿滴滴打车IOS风格时间选择器在线预览地址(请切换到移动端模式打开)
 >[http://codepen.io/jawil/pen/WRBxya](http://codepen.io/jawil/pen/WRBxya)
 
+ ```
  /**
   * [datePicker plugin]
   * IOS风格日期选择器,仿滴滴打车预约用车时间选择器
@@ -11,6 +12,7 @@
   * @get  {[type]}        var timeStr= sessionStorage.getItem('timeStr');
   * @get  {[type]}        var timeStamp= sessionStorage.getItem('timeStamp');
   */
+ ```
 
 
 
