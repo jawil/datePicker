@@ -353,8 +353,10 @@
          selectedMinute = minutesArr[indexMinute]
      });
 
-     //获得最后选择的日期
-     const confirmTime = f => {
+    //获得最后选择的日期
+     const confirmTime = e => {
+         e.preventDefault()
+         e.stopPropagation()
          const minute = selectedMinute
          const hour = selectedHour
          const day = parseInt(selectedDay.split('月')[1])
@@ -364,11 +366,15 @@
          let timeStr = `${selectedDay} ${hour}点${minute}分`
          sessionStorage.setItem('timeStamp', timeStamp);
          sessionStorage.setItem('timeStr', timeStr);
+         document.querySelector('.bookTime').innerHTML = timeStr;
          console.log(year, month, day, hour, minute, timeStamp, timeStr)
+         document.querySelector('.mf-picker').style.display = 'none'
      }
 
      //显示隐藏
-     const toggle = f => {
+     const toggle = e => {
+         e.preventDefault()
+         e.stopPropagation()
          document.querySelector('.mf-picker').style.display = 'none'
      }
 
