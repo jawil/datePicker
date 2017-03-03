@@ -362,7 +362,7 @@
          const day = parseInt(selectedDay.split('月')[1])
          const month = parseInt(selectedDay.split('(')[1])
          const year = (month == 1 && day <= 2) ? currentYear + 1 : currentYear
-         let timeStamp = new Date(`${year}-${month}-${day} ${hour}:${minute}`).getTime()
+         let timeStamp = new Date(`${year}/${month}/${day} ${hour}:${minute}`).getTime()
          let timeStr = `${selectedDay} ${hour}点${minute}分`
          sessionStorage.setItem('timeStamp', timeStamp);
          sessionStorage.setItem('timeStr', timeStr);
