@@ -1,5 +1,6 @@
-####仿滴滴打车IOS风格时间选择器在线预览地址(请切换到移动端模式打开)
->[http://codepen.io/jawil/pen/WRBxya](http://codepen.io/jawil/pen/WRBxya)
+####仿滴滴打车IOS风格时间选择器在线预览地址(PC请切换到移动端模式打开)
+
+>[http://codepen.io/jawil/full/WRBxya/](http://codepen.io/jawil/full/WRBxya/)
 
  ```
  /**
