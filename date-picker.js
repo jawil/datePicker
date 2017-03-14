@@ -17,7 +17,7 @@
      let hoursArr = []
      let minutesArr = []
 
-     //用户最终选择的日期
+     //用户最终选择日期
      let selectedYear = ''
      let selectedDay = ''
      let selectedHour = ''
