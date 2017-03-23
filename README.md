@@ -1,4 +1,4 @@
-####仿滴滴打车IOS风格时间选择器在线预览地址(PC请切换到移动端模式打开)
+#### 仿滴滴打车IOS风格时间选择器在线预览地址(PC请切换到移动端模式打开)
 
 >[http://codepen.io/jawil/full/WRBxya/](http://codepen.io/jawil/full/WRBxya/)
 
@@ -17,6 +17,7 @@
 
 
 
-####效果图
-<img src="http://i65.tinypic.com/aawy1k.jpg"/ width="50%" height="50%">
+#### 效果图
+![](http://i65.tinypic.com/aawy1k.jpg/)
+<img src="http://i65.tinypic.com/aawy1k.jpg/" width="50%" height="50%">
 
