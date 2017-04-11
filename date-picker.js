@@ -161,7 +161,7 @@
          wheelDay.innerHTML = wheelDayHtml
          wheelHour.innerHTML = wheelHourHtml
          wheelMinute.innerHTML = wheelMinuteHtml
-     })();
+     })()
 
 
      //仿IOS日期风格选择器
@@ -380,7 +380,7 @@
          const minute = selectedMinute,
              hour = selectedHour,
              day = parseInt(selectedDay.split('月')[1]),
-             month = parseInt(selectedDay.split('(')[1]),
+             month = parseInt(selectedDay.split('月')[0].slice(-1)),
              year = (month == 1 && day < app) ? currentYear + 1 : currentYear
              //IOS版本浏览器不兼容new Date('2017-04-11')这种格式化，故用new Date('2017/04/11')
          let timeStamp = new Date(`${year}/${month}/${day} ${hour}:${minute}`).getTime(),
