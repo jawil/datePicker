@@ -9,69 +9,84 @@
   * @get  {[type]}        var timeStamp= sessionStorage.getItem('timeStamp');
   */
 
+ 'use strict'
+
+ //默认配置
+ const DEFAULT_OPTIONS = {
+     appointDays: 7, //默认可以预约未来7天
+     preTime: 20, //默认只能预约10分钟之后,如果两个小时就填120
+     disMinute: 1 //分钟的间隔，默认一分钟
+ }
+
+ function datePicker(options = {}) {
+
+     //最终的配置
+     const
+         CHOICE_OPTIONS = Object.assign({}, options, DEFAULT_OPTIONS),
+         app = CHOICE_OPTIONS.appointDays,
+         pre_min = CHOICE_OPTIONS.preTime % 60,
+         dism = CHOICE_OPTIONS.disMinute,
+         pre_hour = Math.floor(DEFAULT_OPTIONS.preTime / 60)
+
+     let daysArr = [],
+         hoursArr = [],
+         minutesArr = [],
+
+         //用户最终选择日期
+         selectedYear = '',
+         selectedDay = '',
+         selectedHour = '',
+         selectedMinute = '',
 
 
- ! function() {
-     'use strict'
-     let daysArr = []
-     let hoursArr = []
-     let minutesArr = []
-
-     //用户最终选择日期
-     let selectedYear = ''
-     let selectedDay = ''
-     let selectedHour = ''
-     let selectedMinute = ''
+         //初始化的时间
+         initHour, initMinute,
+         initHourArr = [],
+         initMinuteArr = [],
+         isToday = true,
 
 
-     //初始化的时间
-     let initHour, initMinute
-     let initHourArr = []
-     let initMinuteArr = []
-     let isToday = true
-
-
-     //初始化日期,获得当前日期
-     let date = new Date()
-     let currentYear = date.getFullYear()
-     let currentMonth = date.getMonth() + 1
-     let currentDay = date.getDate()
-     let currentHours = date.getHours()
-     let currentMinutes = date.getMinutes()
-         //获取当前月有多少天
-     let DayNumOfMonth = new Date(currentYear, currentMonth, 0).getDate()
-         //获取daysArr
-     let remainDay = DayNumOfMonth - currentDay
+         //初始化日期,获得当前日期
+         date = new Date(),
+         currentYear = date.getFullYear(),
+         currentMonth = date.getMonth() + 1,
+         currentDay = date.getDate(),
+         currentHours = date.getHours() + pre_hour,
+         currentMinutes = date.getMinutes()
 
 
      //筛选符合条件的日期
      const filterDate = (f => {
-         switch (remainDay) {
-             case 0:
-                 daysArr = [
-                     `今天(${currentMonth}月${currentDay}日)`,
-                     `明天(${(currentMonth+1)%12}月1日)`,
-                     `后天(${(currentMonth+1)%12}月2日)`
-                 ];
-                 break;
-             case 1:
-                 daysArr = [
-                     `今天(${currentMonth}月${currentDay}日)`,
-                     `明天(${currentMonth}月${currentDay+1}日)`,
-                     `后天(${(currentMonth+1)%12}月${1}日)`
-                 ];
-                 break;
-             default:
-                 daysArr = [
-                     `今天(${currentMonth}月${currentDay}日)`,
-                     `明天(${currentMonth}月${currentDay+1}日)`,
-                     `后天(${currentMonth}月${currentDay+2}日)`
-                 ];
-                 break;
+         //获取当前月有多少天
+         let DayNumOfMonth = new Date(currentYear, currentMonth, 0).getDate(),
+             //获取daysArr
+             remainDay = DayNumOfMonth - currentDay,
+             timeStamp = Date.now()
+
+         for (let i = 0; i < app; i++) {
+             let preStamp = timeStamp + 24 * 60 * 60 * 1000 * i,
+                 date = new Date(preStamp),
+                 preYear = date.getFullYear(),
+                 preMonth = date.getMonth() + 1,
+                 preDay = date.getDate()
+             switch (i) {
+                 case 0:
+                     daysArr.push(`今天(${preMonth}月${preDay}日)`)
+                     break
+                 case 1:
+                     daysArr.push(`明天(${preMonth}月${preDay}日)`)
+                     break
+                 case 2:
+                     daysArr.push(`后天(${preMonth}月${preDay}日)`)
+                     break
+                 default:
+                     daysArr.push(`${preMonth}月${preDay}日`)
+                     break
+             }
          }
 
          //如果是今天的23:30以后预约车,那么今天的就不能预约
-         if (currentHours == 23 && currentMinutes >= 30) {
+         if (currentHours == 23 && currentMinutes >= 60 - pre_min) {
              daysArr.shift()
          }
 
@@ -80,8 +95,8 @@
              initHourArr.push(i)
          }
 
-         //如果当前的分钟超过30,则小时只能从下一个小时选择,当前时间3:40=>4:10
-         if (currentMinutes + 30 > 55) {
+         //如果当前的分钟超过pre_min(假设pre_min=30),则小时只能从下一个小时选择,当前时间3:40=>4:10
+         if (currentMinutes + pre_min > 60 - dism) {
              hoursArr.shift()
              initHourArr.shift()
          }
@@ -94,14 +109,14 @@
              }
          }
 
-         for (let j = Math.ceil(currentMinutes / 5) * 5 + 30; j < 60; j += 5) {
+         for (let j = Math.ceil(currentMinutes / dism) * dism + pre_min; j < 60; j += dism) {
              minutesArr.push(j)
              initMinuteArr.push(j)
          }
 
          //如果分钟没有满足条件的,说明现在已经30分以后,小时会自动加1
          if (!minutesArr.length) {
-             for (let k = Math.ceil((currentMinutes - 30) / 5) * 5; k < 60; k += 5) {
+             for (let k = Math.ceil((currentMinutes + pre_min - 60) / dism) * dism; k < 60; k += dism) {
                  minutesArr.push(k)
                  initMinuteArr.push(k)
              }
@@ -118,24 +133,27 @@
      })()
 
 
-     let wheel = document.querySelectorAll('.wheel-scroll');
-     let wheelDay = wheel[0]
-     let wheelHour = wheel[1]
-     let wheelMinute = wheel[2]
+     let wheel = document.querySelectorAll('.wheel-scroll'),
+         wheelDay = wheel[0],
+         wheelHour = wheel[1],
+         wheelMinute = wheel[2]
 
 
 
      //初始化html结构
      const initHtml = (f => {
-         let wheelDayHtml = ''
-         let wheelHourHtml = ''
-         let wheelMinuteHtml = ''
+         let wheelDayHtml = '',
+             wheelHourHtml = '',
+             wheelMinuteHtml = ''
+
          daysArr.forEach(ele => {
              wheelDayHtml += `<li class="wheel-item">${ele}</li>`
          })
+
          hoursArr.forEach(ele => {
              wheelHourHtml += `<li class="wheel-item">${ele}点</li>`
          })
+
          minutesArr.forEach(ele => {
              wheelMinuteHtml += `<li class="wheel-item">${ele}分</li>`
          })
@@ -194,14 +212,14 @@
                  speed = (e.changedTouches[0].pageY - prevPoint)
                  prevPoint = e.changedTouches[0].pageY
                      //已滑动在头部或尾部,但是用户还想往上或下滑,这是给一种越往上或下滑越难拖动的体验
-                 if (this.index == 0 && iDisY > 0 || this.index == -length && iDisY < 0) {
+                 if ((this.index == 0 && iDisY > 0) || (this.index == -length && iDisY < 0)) {
                      step = 1 - Math.abs(iDisY) / selector.clientWidth //根据超出长度计算系数大小，超出的越到 系数越小
                      step = Math.max(step, 0) //系数最小值为0
                      iDisY = parseInt(iDisY * step)
                  }
                  datePicker.setTranslate3d(selector, this.index * this.distance + iDisY)
                  datePicker.setRotateX(this.obj.children, this.index + iDisY / this.distance)
-             };
+             }
              const touchend = e => {
                  e.preventDefault()
                  e.stopPropagation()
@@ -218,19 +236,19 @@
                              this.index += Math.round(iDisX / this.distance)
                          }
                          this.index = this.index > 0 ? Math.min(this.index, 0) : Math.max(this.index, -length)
-                         this.index = this.index > 0 ? 0 : (this.index < -length ? -length : this.index);
+                         this.index = this.index > 0 ? 0 : (this.index < -length ? -length : this.index)
                          selector.style.transitionDuration = '400ms'
+                         selector.addEventListener("webkitTransitionEnd", f => {
+                             //touchend事件触发后会有一个动画，触发完成后立即清除transition
+                             selector.style.transitionDuration = '0ms'
+                         })
                          Array.from(selector.children).forEach(ele => {
                              ele.style.transitionDuration = '200ms'
-                         });
-                         datePicker.setTranslate3d(selector, this.index * this.distance)
-                         setTimeout(f => {
-                             selector.style.transitionDuration = '0ms'
-                             Array.from(selector.children).forEach(ele => {
+                             ele.addEventListener("webkitTransitionEnd", f => {
                                  ele.style.transitionDuration = '0ms'
                              })
-                         }, 0)
-
+                         })
+                         datePicker.setTranslate3d(selector, this.index * this.distance)
                          datePicker.setRotateX(this.obj.children, this.index)
                          this.callback && this.callback(Math.abs(this.index))
                      } else {
@@ -249,43 +267,12 @@
 
 
      new datePicker(wheelDay, 0, indexDay => {
-         let wheelHourHtml = ''
-         let wheelMinuteHtml = ''
-             //明天或者后天
-         selectedDay = daysArr[indexDay]
-         if (indexDay == 1 || indexDay == 2) {
-             //天数选择影响小时
-             isToday = false
-             hoursArr = []
-             for (let h = 0; h < 24; h++) {
-                 hoursArr.push(h)
-             }
-             let hindex = hoursArr.indexOf(selectedHour)
-             hoursArr.forEach((ele) => {
-                 wheelHourHtml += `<li class="wheel-item">${ele}点</li>`
-             })
-             wheelHour.innerHTML = wheelHourHtml
-
-             new datePicker(wheelHour, hindex, indexHour => {
-                 selectedHour = hoursArr[indexHour]
-             })
-
-             //天数选择影响分钟
-             minutesArr = [];
-             for (let m = 0; m < 60; m += 5) {
-                 minutesArr.push(m)
-             }
-             let mindex = minutesArr.indexOf(selectedMinute)
+         let wheelHourHtml = '',
              wheelMinuteHtml = ''
-             minutesArr.forEach((ele) => {
-                 wheelMinuteHtml += `<li class="wheel-item">${ele}分</li>`;
-             })
-             wheelMinute.innerHTML = wheelMinuteHtml
-             new datePicker(wheelMinute, mindex, indexMinute => {
-                 selectedMinute = minutesArr[indexMinute];
-             })
-         } //今天
-         else if (indexDay == 0) {
+             //没有逗号，这个selectedDay是全局变量。。。
+         selectedDay = daysArr[indexDay]
+             //今天
+         if (indexDay == 0) {
              isToday = true
                  //用户选择今天,但是此时的小时已不满足要求,小于当前时间,需要重置初始化小时选项
              hoursArr = initHourArr
@@ -313,6 +300,37 @@
                      selectedMinute = minutesArr[indexMinute]
                  })
              }
+             //明天或者后天
+         } else {
+             //天数选择影响小时
+             isToday = false
+             hoursArr = []
+             for (let h = 0; h < 24; h++) {
+                 hoursArr.push(h)
+             }
+             let hindex = hoursArr.indexOf(selectedHour)
+             hoursArr.forEach((ele) => {
+                 wheelHourHtml += `<li class="wheel-item">${ele}点</li>`
+             })
+             wheelHour.innerHTML = wheelHourHtml
+
+             new datePicker(wheelHour, hindex, indexHour => {
+                     selectedHour = hoursArr[indexHour]
+                 })
+                 //天数选择影响分钟
+             minutesArr = [];
+             for (let m = 0; m < 60; m += dism) {
+                 minutesArr.push(m)
+             }
+             let mindex = minutesArr.indexOf(selectedMinute)
+             wheelMinuteHtml = ''
+             minutesArr.forEach((ele) => {
+                 wheelMinuteHtml += `<li class="wheel-item">${ele}分</li>`;
+             })
+             wheelMinute.innerHTML = wheelMinuteHtml
+             new datePicker(wheelMinute, mindex, indexMinute => {
+                 selectedMinute = minutesArr[indexMinute];
+             })
          }
      })
 
@@ -335,7 +353,7 @@
              })
          } else {
              minutesArr = []
-             for (let m = 0; m < 60; m += 5) {
+             for (let m = 0; m < 60; m += dism) {
                  minutesArr.push(m)
              }
              let mindex = minutesArr.indexOf(selectedMinute)
@@ -347,26 +365,29 @@
                  selectedMinute = minutesArr[indexMinute]
              })
          }
-     });
+     })
 
      new datePicker(wheelMinute, 0, indexMinute => {
          selectedMinute = minutesArr[indexMinute]
-     });
+     })
 
-    //获得最后选择的日期
+     //获得最后选择的日期
      const confirmTime = e => {
          e.preventDefault()
          e.stopPropagation()
-         const minute = selectedMinute
-         const hour = selectedHour
-         const day = parseInt(selectedDay.split('月')[1])
-         const month = parseInt(selectedDay.split('(')[1])
-         const year = (month == 1 && day <= 2) ? currentYear + 1 : currentYear
-         let timeStamp = new Date(`${year}/${month}/${day} ${hour}:${minute}`).getTime()
-         let timeStr = `${selectedDay} ${hour}点${minute}分`
-         sessionStorage.setItem('timeStamp', timeStamp);
-         sessionStorage.setItem('timeStr', timeStr);
-         document.querySelector('.bookTime').innerHTML = timeStr;
+
+         const minute = selectedMinute,
+             hour = selectedHour,
+             day = parseInt(selectedDay.split('月')[1]),
+             month = parseInt(selectedDay.split('(')[1]),
+             year = (month == 1 && day < app) ? currentYear + 1 : currentYear
+             //IOS版本浏览器不兼容new Date('2017-04-11')这种格式化，故用new Date('2017/04/11')
+         let timeStamp = new Date(`${year}/${month}/${day} ${hour}:${minute}`).getTime(),
+             timeStr = `${selectedDay} ${hour}点${minute}分`
+
+         sessionStorage.setItem('timeStamp', timeStamp)
+         sessionStorage.setItem('timeStr', timeStr)
+
          console.log(year, month, day, hour, minute, timeStamp, timeStr)
          document.querySelector('.mf-picker').style.display = 'none'
      }
@@ -377,12 +398,10 @@
          e.stopPropagation()
          document.querySelector('.mf-picker').style.display = 'none'
      }
-
-
-
      document.querySelector('.confirm').addEventListener('touchend', confirmTime, false)
      document.querySelector('.cancel').addEventListener('touchend', toggle, false)
      document.querySelector('.mf-picker').addEventListener('touchend', toggle, false)
 
+ }
 
- }()
+ datePicker()
