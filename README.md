@@ -15,11 +15,13 @@
   */
  ```
 #### 示例：
+
  datePicker({
      appointDays: 7, //默认可以预约未来7天
      preTime: 20, //默认只能预约10分钟之后,如果两个小时就填120
      disMinute: 1 //分钟的间隔，默认一分钟
  })
+ 
 点击确认之后，时间和字符串存到在sessionstorage里面：
 
 ```
@@ -27,5 +29,6 @@ var timeStr= sessionStorage.getItem('timeStr')
 var timeStamp= sessionStorage.getItem('timeStamp')
 ```
 #### 效果图
+
 <img src="http://oo2r9rnzp.bkt.clouddn.com/WX20170411-212505@2x.png" width="50%" height="50%">
 
