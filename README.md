@@ -14,6 +14,7 @@
   * @get  {[type]}        var timeStamp= sessionStorage.getItem('timeStamp');
   */
  ```
+
 #### 示例：
 
  datePicker({
@@ -28,6 +29,7 @@
 var timeStr= sessionStorage.getItem('timeStr')
 var timeStamp= sessionStorage.getItem('timeStamp')
 ```
+
 #### 效果图
 
 <img src="http://oo2r9rnzp.bkt.clouddn.com/WX20170411-212505@2x.png" width="50%" height="50%">
