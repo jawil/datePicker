@@ -14,7 +14,7 @@
  //默认配置
  const DEFAULT_OPTIONS = {
      appointDays: 7, //默认可以预约未来7天
-     preTime: 20, //默认只能预约10分钟之后,如果两个小时就填120
+     preTime: 20, //默认只能预约20分钟之后,如果两个小时就填120
      disMinute: 1 //分钟的间隔，默认一分钟
  }
 
