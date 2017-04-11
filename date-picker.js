@@ -192,12 +192,13 @@
              this.bind(this.obj)
          }
          bind(selector) {
-             let iStartPageY = 0
-             let step = 1 //弹性系数
-             let prevPoint = 0
-             let speed = 0 //手指离开时候的瞬时速度,速度越大,最后停留的越远
-             let timer = null
-             let length = this.length - 1
+             let iStartPageY = 0,
+                 step = 1, //弹性系数
+                 prevPoint = 0,
+                 speed = 0, //手指离开时候的瞬时速度,速度越大,最后停留的越远
+                 timer = null,
+                 length = this.length - 1
+
              const touchstart = e => {
                  e.preventDefault()
                  e.stopPropagation()
