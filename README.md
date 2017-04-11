@@ -17,6 +17,7 @@
 
 #### 示例：
 
+ ```
  datePicker({
      appointDays: 7, //默认可以预约未来7天
      
@@ -25,7 +26,7 @@
      disMinute: 1 //分钟的间隔，默认一分钟
      
  })
- 
+ ```
 点击确认之后，时间和字符串存到在sessionstorage里面：
 
 ```
