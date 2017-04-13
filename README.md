@@ -27,7 +27,7 @@
      
  })
  ```
-点击确认之后，时间和字符串存到在sessionstorage里面：
+   点击确认之后，时间和字符串存到在sessionstorage里面：
 
 ```
 var timeStr= sessionStorage.getItem('timeStr')
