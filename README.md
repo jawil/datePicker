@@ -7,10 +7,7 @@
   * IOS风格日期选择器,仿滴滴打车预约用车时间选择器
   * @Author  jawil
   * @date    2017-02-17
-  * @param   {[string]}   timeStr [返回的时间字符串存在sessionStorage里面]
-  * @param   {[long]}     timeStamp [返回的时间戳存在sessionStorage里面]
-  * @get  {[type]}        var timeStr= sessionStorage.getItem('timeStr');
-  * @get  {[type]}        var timeStamp= sessionStorage.getItem('timeStamp');
+  * @param   {[object]}   options [配置参数]
  ```
 
 #### 运行预览
@@ -30,7 +27,11 @@
      
      preTime: 20, //默认只能预约20分钟之后,如果两个小时就填120
      
-     disMinute: 1 //分钟的间隔，默认一分钟
+     disMinute: 1, //分钟的间隔，默认一分钟
+
+     callBack: function(timeStr, timeStamp) {//点击确认获取到的时间戳和时间字符串
+         console.log(timeStr, timeStamp)
+     }Ï
      
  })
  ```

@@ -3,11 +3,10 @@
   * IOS风格日期选择器,仿滴滴打车预约用车时间选择器
   * @Author  jawil
   * @date    2017-02-17
-  * @param   {[string]}   timeStr [返回的时间字符串存在sessionStorage里面]
-  * @param   {[long]}     timeStamp [返回的时间戳存在sessionStorage里面]
-  * @get  {[type]}        var timeStr= sessionStorage.getItem('timeStr');
-  * @get  {[type]}        var timeStamp= sessionStorage.getItem('timeStamp');
+  * @param   {[object]}   options [配置参数]
   */
+
+ import pickerSlider from '../util/pickerSlider.js'
 
  'use strict'
 
@@ -15,14 +14,17 @@
  const DEFAULT_OPTIONS = {
      appointDays: 7, //默认可以预约未来7天
      preTime: 20, //默认只能预约20分钟之后,如果两个小时就填120
-     disMinute: 1 //分钟的间隔，默认一分钟
+     disMinute: 1, //分钟的间隔，默认一分钟
+     callBack: function(timeStr, timeStamp) { //点击确认获取到的时间戳和时间字符串
+         console.log(timeStr, timeStamp)
+     }
  }
 
  function datePicker(options = {}) {
-
      //最终的配置
      const
-         CHOICE_OPTIONS = Object.assign({}, options, DEFAULT_OPTIONS),
+         CHOICE_OPTIONS = Object.assign({}, DEFAULT_OPTIONS, options),
+         callBack = CHOICE_OPTIONS.callBack,
          app = CHOICE_OPTIONS.appointDays,
          pre_min = CHOICE_OPTIONS.preTime % 60,
          dism = CHOICE_OPTIONS.disMinute,
@@ -58,10 +60,7 @@
      //筛选符合条件的日期
      const filterDate = (f => {
          //获取当前月有多少天
-         let DayNumOfMonth = new Date(currentYear, currentMonth, 0).getDate(),
-             //获取daysArr
-             remainDay = DayNumOfMonth - currentDay,
-             timeStamp = Date.now()
+         let timeStamp = Date.now()
 
          for (let i = 0; i < app; i++) {
              let preStamp = timeStamp + 24 * 60 * 60 * 1000 * i,
@@ -164,110 +163,8 @@
      })()
 
 
-     //仿IOS日期风格选择器
-     class datePicker {
-         constructor(obj, initIndex = 0, callback) {
-             this.obj = obj
-             this.index = -initIndex
-             this.callback = callback
-             this.deg = 25 //初始化偏转的角度
-             this.length = this.obj.children.length
-             this.distance = this.obj.children[0].offsetHeight
-             this.ready()
-         }
-         static setTranslate3d(obj, dis) {
-             obj.style.transform = `translate3d(0,${dis}px,0)`
-         }
-         static setRotateX(obj, index, deg = 25) {
-             //设置每个Li的偏转角度
-             Array.from(obj).forEach((ele, i) => {
-                 obj[i].style.transform = `rotateX(${(i+index)*deg}deg)`
-             })
-         }
-         ready() {
-             //初始化运动距离
-             datePicker.setTranslate3d(this.obj, this.index * this.distance)
-                 //初始化3D偏转角度
-             datePicker.setRotateX(this.obj.children, this.index)
-             this.bind(this.obj)
-         }
-         bind(selector) {
-             let iStartPageY = 0,
-                 step = 1, //弹性系数
-                 prevPoint = 0,
-                 speed = 0, //手指离开时候的瞬时速度,速度越大,最后停留的越远
-                 timer = null,
-                 length = this.length - 1
 
-             const touchstart = e => {
-                 e.preventDefault()
-                 e.stopPropagation()
-                 clearInterval(timer)
-                 iStartPageY = e.changedTouches[0].clientY
-                 prevPoint = iStartPageY
-             }
-             const touchmove = e => {
-                 e.preventDefault()
-                 e.stopPropagation()
-                 let iDisY = (e.changedTouches[0].pageY - iStartPageY)
-                 speed = (e.changedTouches[0].pageY - prevPoint)
-                 prevPoint = e.changedTouches[0].pageY
-                     //已滑动在头部或尾部,但是用户还想往上或下滑,这是给一种越往上或下滑越难拖动的体验
-                 if ((this.index == 0 && iDisY > 0) || (this.index == -length && iDisY < 0)) {
-                     step = 1 - Math.abs(iDisY) / selector.clientWidth //根据超出长度计算系数大小，超出的越到 系数越小
-                     step = Math.max(step, 0) //系数最小值为0
-                     iDisY = parseInt(iDisY * step)
-                 }
-                 datePicker.setTranslate3d(selector, this.index * this.distance + iDisY)
-                 datePicker.setRotateX(this.obj.children, this.index + iDisY / this.distance)
-             }
-             const touchend = e => {
-                 e.preventDefault()
-                 e.stopPropagation()
-                 let iDisX = e.changedTouches[0].pageY - iStartPageY
-                     //初速度很小的逻辑处理
-                 let flag = false
-                 if (Math.abs(speed) <= 1) {
-                     flag = true
-                 }
-                 timer = setInterval(f => {
-                     if (Math.abs(speed) <= 1) {
-                         clearInterval(timer)
-                         if (flag) {
-                             this.index += Math.round(iDisX / this.distance)
-                         }
-                         this.index = this.index > 0 ? Math.min(this.index, 0) : Math.max(this.index, -length)
-                         this.index = this.index > 0 ? 0 : (this.index < -length ? -length : this.index)
-                         selector.style.transitionDuration = '400ms'
-                         selector.addEventListener("webkitTransitionEnd", f => {
-                             //touchend事件触发后会有一个动画，触发完成后立即清除transition
-                             selector.style.transitionDuration = '0ms'
-                         })
-                         Array.from(selector.children).forEach(ele => {
-                             ele.style.transitionDuration = '200ms'
-                             ele.addEventListener("webkitTransitionEnd", f => {
-                                 ele.style.transitionDuration = '0ms'
-                             })
-                         })
-                         datePicker.setTranslate3d(selector, this.index * this.distance)
-                         datePicker.setRotateX(this.obj.children, this.index)
-                         this.callback && this.callback(Math.abs(this.index))
-                     } else {
-                         speed *= 0.2
-                         iDisX += speed
-                         this.index += Math.round(iDisX / this.distance)
-                     }
-                 }, 13);
-             }
-             selector.addEventListener("touchstart", touchstart, false)
-             selector.addEventListener("touchmove", touchmove, false)
-             selector.addEventListener("touchend", touchend, false)
-         }
-     }
-
-
-
-     new datePicker(wheelDay, 0, indexDay => {
+     new pickerSlider(wheelDay, 0, indexDay => {
          let wheelHourHtml = '',
              wheelMinuteHtml = ''
              //没有逗号，这个selectedDay是全局变量。。。
@@ -284,7 +181,7 @@
              let hindex = selectedHour < initHour ? 0 : hoursArr.indexOf(selectedHour)
                  //重置当前选择的时间,从明天滑回选择今天需要重置selectedHour
              selectedHour = hoursArr[hindex]
-             new datePicker(wheelHour, hindex, indexHour => {
+             new pickerSlider(wheelHour, hindex, indexHour => {
                      selectedHour = hoursArr[indexHour]
                  })
                  //用户选择今天,但是此时的分钟已不满足要求,小于当前时间,需要重置初始化分钟选项
@@ -297,7 +194,7 @@
                  let mindex = selectedMinute < initMinute ? 0 : minutesArr.indexOf(selectedMinute)
                      //重置当前选择的时间,从明天滑回选择今天需要重置selectedMinute
                  selectedMinute = minutesArr[mindex]
-                 new datePicker(wheelMinute, mindex, indexMinute => {
+                 new pickerSlider(wheelMinute, mindex, indexMinute => {
                      selectedMinute = minutesArr[indexMinute]
                  })
              }
@@ -315,7 +212,7 @@
              })
              wheelHour.innerHTML = wheelHourHtml
 
-             new datePicker(wheelHour, hindex, indexHour => {
+             new pickerSlider(wheelHour, hindex, indexHour => {
                      selectedHour = hoursArr[indexHour]
                  })
                  //天数选择影响分钟
@@ -329,14 +226,14 @@
                  wheelMinuteHtml += `<li class="wheel-item">${ele}分</li>`;
              })
              wheelMinute.innerHTML = wheelMinuteHtml
-             new datePicker(wheelMinute, mindex, indexMinute => {
+             new pickerSlider(wheelMinute, mindex, indexMinute => {
                  selectedMinute = minutesArr[indexMinute];
              })
          }
      })
 
 
-     new datePicker(wheelHour, 0, indexHour => {
+     new pickerSlider(wheelHour, 0, indexHour => {
          let wheelMinuteHtml = ''
          selectedHour = hoursArr[indexHour]
              //滑到头部,这是要处理分钟是否小于当前时间
@@ -349,7 +246,7 @@
              let mindex = selectedMinute < initMinute ? 0 : minutesArr.indexOf(selectedMinute)
                  //重置当前选择的时间,从明天滑回选择今天需要重置selectedMinute
              selectedMinute = minutesArr[mindex]
-             new datePicker(wheelMinute, mindex, indexMinute => {
+             new pickerSlider(wheelMinute, mindex, indexMinute => {
                  selectedMinute = minutesArr[indexMinute]
              })
          } else {
@@ -362,13 +259,13 @@
                  wheelMinuteHtml += `<li class="wheel-item">${ele}分</li>`
              });
              wheelMinute.innerHTML = wheelMinuteHtml
-             new datePicker(wheelMinute, mindex, indexMinute => {
+             new pickerSlider(wheelMinute, mindex, indexMinute => {
                  selectedMinute = minutesArr[indexMinute]
              })
          }
      })
 
-     new datePicker(wheelMinute, 0, indexMinute => {
+     new pickerSlider(wheelMinute, 0, indexMinute => {
          selectedMinute = minutesArr[indexMinute]
      })
 
@@ -386,10 +283,7 @@
          let timeStamp = new Date(`${year}/${month}/${day} ${hour}:${minute}`).getTime(),
              timeStr = `${selectedDay} ${hour}点${minute}分`
 
-         sessionStorage.setItem('timeStamp', timeStamp)
-         sessionStorage.setItem('timeStr', timeStr)
-
-         console.log(year, month, day, hour, minute, timeStamp, timeStr)
+         callBack && callBack(timeStamp, timeStr)
          document.querySelector('.mf-picker').style.display = 'none'
      }
 
