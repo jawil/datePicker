@@ -35,12 +35,8 @@
      
  })
  ```
-点击确认之后，时间和字符串存到在sessionstorage里面：
+点击确认之后，回到函数callback可以拿到选择的时间字符串和时间戳。
 
-```
-var timeStr= sessionStorage.getItem('timeStr')
-var timeStamp= sessionStorage.getItem('timeStamp')
-```
 
 #### 效果图
 
