@@ -3,7 +3,6 @@
 >[http://codepen.io/jawil/full/WRBxya/](http://codepen.io/jawil/full/WRBxya/)
 
  ```
- /**
   * [datePicker plugin]
   * IOS风格日期选择器,仿滴滴打车预约用车时间选择器
   * @Author  jawil
@@ -12,12 +11,20 @@
   * @param   {[long]}     timeStamp [返回的时间戳存在sessionStorage里面]
   * @get  {[type]}        var timeStr= sessionStorage.getItem('timeStr');
   * @get  {[type]}        var timeStamp= sessionStorage.getItem('timeStamp');
-  */
  ```
+
+#### 运行预览
+
+1. cd datePicker
+2. npm install
+3. npm run dev
+
 
 #### 示例：
 
  ```
+ <script src="dist/date-picker.min.js"></script>
+ 
  datePicker({
      appointDays: 7, //默认可以预约未来7天
      
