@@ -4,11 +4,9 @@
   "description": "youzan shop",
   "main": "index.js",
   "scripts": {
-    "server": "npm run build && npm run test",
+    "dev": "npm run build && npm run test",
     "test": "webpack-dev-server",
-    "dev": "cross-env NODE_ENV=development webpack  --progress",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "dest": "cd wxmp && browser-sync start --server"
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "keywords": [
     "youzan",

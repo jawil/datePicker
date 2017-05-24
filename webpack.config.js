@@ -12,13 +12,19 @@ module.exports = {
     entry: './src/index.js',
     output: {
         path: BUILD_PATH,
-        library: 'dataPicker',
+        library: 'datePicker',
         libraryTarget: 'umd',
         filename: "date-picker.min.js"
     },
-
     devtool: false,
-
+    devServer: {
+        contentBase: ROOT_PATH,
+        historyApiFallback: true,
+        hot: true,
+        open: true,
+        inline: true,
+        port: 8888
+    },
     module: {
         rules: [{
             test: /\.js$/,
@@ -40,6 +46,8 @@ module.exports = {
     },
     plugins: [
         new CleanPlugin([BUILD_PATH]),
+        //热插拔
+        new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             filename: "index.html", //生成的html存放路径，相对于 path
             template: "./src/index.html",
