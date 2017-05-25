@@ -132,11 +132,14 @@
         .mf-picker .mf-picker-panel .wheel-wrapper {
             display: -webkit-box;
             display: flex;
+            display: -webkit-flex;
             padding: 0 16px;
         }
         
         .mf-picker .mf-picker-panel .wheel-wrapper .wheel {
+            -webkit-box-flex: 1;
             flex: 1;
+            -webkit-flex: 1;
             flex-basis: 1e-9px;
             width: 1%;
             height: 173px;
@@ -145,7 +148,9 @@
         }
         
         .mf-picker .mf-picker-panel .wheel-wrapper .wheel:first-child {
+            -webkit-box-flex: 1.8;
             flex: 1.8;
+            -webkit-flex: 1.8;
         }
         
         .mf-picker .mf-picker-panel .wheel-wrapper .wheel .wheel-scroll {
@@ -153,14 +158,17 @@
             margin-top: 68px;
             line-height: 36px;
             list-style: none;
+            -webkit-transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
             transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
         }
         
         .mf-picker .mf-picker-panel .wheel-wrapper .wheel .diff {
+            -webkit-transition-duration: 150ms;
             transition-duration: 150ms;
         }
         
         .mf-picker .mf-picker-panel .wheel-wrapper .wheel .wheel-scroll .wheel-item {
+            -webkit-transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
             transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
         }
     </style>

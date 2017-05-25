@@ -10,12 +10,12 @@ module.exports = class datePicker {
         this.ready()
     }
     static setTranslate3d(obj, dis) {
-        obj.style.transform = `translate3d(0,${dis}px,0)`
+        obj.style.webkitTransform = `translate3d(0,${dis}px,0)`
     }
     static setRotateX(obj, index, deg = 25) {
         //设置每个Li的偏转角度
         Array.from(obj).forEach((ele, i) => {
-            obj[i].style.transform = `rotateX(${(i+index)*deg}deg)`
+            obj[i].style.webkitTransform = `rotateX(${(i+index)*deg}deg)`
         })
     }
     ready() {
@@ -72,15 +72,15 @@ module.exports = class datePicker {
                     }
                     this.index = this.index > 0 ? Math.min(this.index, 0) : Math.max(this.index, -length)
                     this.index = this.index > 0 ? 0 : (this.index < -length ? -length : this.index)
-                    selector.style.transitionDuration = '400ms'
+                    selector.style.webkitTransitionDuration = '400ms'
                     selector.addEventListener("webkitTransitionEnd", f => {
                         //touchend事件触发后会有一个动画，触发完成后立即清除transition
-                        selector.style.transitionDuration = '0ms'
+                        selector.style.webkitTransitionDuration = '0ms'
                     })
                     Array.from(selector.children).forEach(ele => {
-                        ele.style.transitionDuration = '200ms'
+                        ele.style.webkitTransitionDuration = '200ms'
                         ele.addEventListener("webkitTransitionEnd", f => {
-                            ele.style.transitionDuration = '0ms'
+                            ele.style.webkitTransitionDuration = '0ms'
                         })
                     })
                     datePicker.setTranslate3d(selector, this.index * this.distance)
