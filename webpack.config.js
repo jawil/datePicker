@@ -39,7 +39,7 @@ module.exports = {
                 cacheDirectory: true,
                 presets: ['es2015'],
                 plugins: [
-                    ["transform-runtime", "transform-object-assign"]
+                    ["transform-runtime"]
                 ]
             }
         }]
