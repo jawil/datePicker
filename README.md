@@ -15,7 +15,9 @@
 1. cd datePicker
 2. npm install
 3. npm run dev
+4. npm run build(生成dist目录)
 
+**有问题可以邮件联系我，欢迎提issue和Pre**
 
 #### 示例：
 
