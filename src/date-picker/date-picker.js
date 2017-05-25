@@ -6,7 +6,7 @@
   * @param   {[object]}   options [配置参数]
   */
 
- import pickerSlider from '../util/pickerSlider.js'
+ import sliderPicker from '../util/slider-picker.js'
 
  'use strict'
 
@@ -164,7 +164,7 @@
 
 
 
-     new pickerSlider(wheelDay, 0, indexDay => {
+     new sliderPicker(wheelDay, 0, indexDay => {
          let wheelHourHtml = '',
              wheelMinuteHtml = ''
              //没有逗号，这个selectedDay是全局变量。。。
@@ -181,7 +181,7 @@
              let hindex = selectedHour < initHour ? 0 : hoursArr.indexOf(selectedHour)
                  //重置当前选择的时间,从明天滑回选择今天需要重置selectedHour
              selectedHour = hoursArr[hindex]
-             new pickerSlider(wheelHour, hindex, indexHour => {
+             new sliderPicker(wheelHour, hindex, indexHour => {
                      selectedHour = hoursArr[indexHour]
                  })
                  //用户选择今天,但是此时的分钟已不满足要求,小于当前时间,需要重置初始化分钟选项
@@ -194,7 +194,7 @@
                  let mindex = selectedMinute < initMinute ? 0 : minutesArr.indexOf(selectedMinute)
                      //重置当前选择的时间,从明天滑回选择今天需要重置selectedMinute
                  selectedMinute = minutesArr[mindex]
-                 new pickerSlider(wheelMinute, mindex, indexMinute => {
+                 new sliderPicker(wheelMinute, mindex, indexMinute => {
                      selectedMinute = minutesArr[indexMinute]
                  })
              }
@@ -212,7 +212,7 @@
              })
              wheelHour.innerHTML = wheelHourHtml
 
-             new pickerSlider(wheelHour, hindex, indexHour => {
+             new sliderPicker(wheelHour, hindex, indexHour => {
                      selectedHour = hoursArr[indexHour]
                  })
                  //天数选择影响分钟
@@ -226,14 +226,14 @@
                  wheelMinuteHtml += `<li class="wheel-item">${ele}分</li>`;
              })
              wheelMinute.innerHTML = wheelMinuteHtml
-             new pickerSlider(wheelMinute, mindex, indexMinute => {
+             new sliderPicker(wheelMinute, mindex, indexMinute => {
                  selectedMinute = minutesArr[indexMinute];
              })
          }
      })
 
 
-     new pickerSlider(wheelHour, 0, indexHour => {
+     new sliderPicker(wheelHour, 0, indexHour => {
          let wheelMinuteHtml = ''
          selectedHour = hoursArr[indexHour]
              //滑到头部,这是要处理分钟是否小于当前时间
@@ -246,7 +246,7 @@
              let mindex = selectedMinute < initMinute ? 0 : minutesArr.indexOf(selectedMinute)
                  //重置当前选择的时间,从明天滑回选择今天需要重置selectedMinute
              selectedMinute = minutesArr[mindex]
-             new pickerSlider(wheelMinute, mindex, indexMinute => {
+             new sliderPicker(wheelMinute, mindex, indexMinute => {
                  selectedMinute = minutesArr[indexMinute]
              })
          } else {
@@ -259,13 +259,13 @@
                  wheelMinuteHtml += `<li class="wheel-item">${ele}分</li>`
              });
              wheelMinute.innerHTML = wheelMinuteHtml
-             new pickerSlider(wheelMinute, mindex, indexMinute => {
+             new sliderPicker(wheelMinute, mindex, indexMinute => {
                  selectedMinute = minutesArr[indexMinute]
              })
          }
      })
 
-     new pickerSlider(wheelMinute, 0, indexMinute => {
+     new sliderPicker(wheelMinute, 0, indexMinute => {
          selectedMinute = minutesArr[indexMinute]
      })
 
