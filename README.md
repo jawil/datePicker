@@ -17,7 +17,6 @@
 3. npm run dev
 4. npm run build(生成dist目录)
 
-**有问题可以邮件联系我，欢迎提issue和Pre**
 
 #### 示例：
 
@@ -44,3 +43,5 @@
 
 <img src="http://oo2r9rnzp.bkt.clouddn.com/WX20170411-212505@2x.png" width="50%" height="50%">
 
+
+**有问题可以邮件联系我，欢迎提issue和Pre**
