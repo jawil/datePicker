@@ -146,16 +146,16 @@
              wheelHourHtml = '',
              wheelMinuteHtml = ''
 
-         filter.day.forEach(function(ele) {
-             wheelDayHtml += `<li class="wheel-item">${ele.text}</li>`
+         filter.day.forEach(function(ele, index) {
+             wheelDayHtml += `<li class="wheel-item" data-index=${index}>${ele.text}</li>`
          })
 
-         filter.hour.forEach(function(ele) {
-             wheelHourHtml += `<li class="wheel-item">${ele}点</li>`
+         filter.hour.forEach(function(ele, index) {
+             wheelHourHtml += `<li class="wheel-item" data-index=${index}>${ele}点</li>`
          })
 
-         filter.minute.forEach(function(ele) {
-             wheelMinuteHtml += `<li class="wheel-item">${ele}分</li>`
+         filter.minute.forEach(function(ele, index) {
+             wheelMinuteHtml += `<li class="wheel-item" data-index=${index}>${ele}分</li>`
          })
 
          wheelDay.innerHTML = wheelDayHtml
@@ -237,8 +237,8 @@
 
      function createHTML(ele, arr, unit) {
          let innerHTML = ''
-         arr.forEach(item => {
-             innerHTML += `<li class="wheel-item">${item+unit}</li>`
+         arr.forEach(function(item,index) {
+             innerHTML += `<li class="wheel-item" data-index=${index}>${item+unit}</li>`
          })
          ele.innerHTML = innerHTML
      }
@@ -267,9 +267,10 @@
          e.stopPropagation()
          document.querySelector('.mf-picker').style.display = 'none'
      }
+
+
      document.querySelector('.confirm').addEventListener('touchend', confirmTime, false)
      document.querySelector('.cancel').addEventListener('touchend', toggle, false)
-     document.querySelector('.mf-picker').addEventListener('touchend', toggle, false)
 
  }
  module.exports = datePicker

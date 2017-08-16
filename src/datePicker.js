@@ -58,45 +58,59 @@ module.exports = class datePicker {
         const touchend = e => {
             e.preventDefault()
             e.stopPropagation()
-            let iDisX = e.changedTouches[0].pageY - iStartPageY
+            let iDisY = e.changedTouches[0].pageY - iStartPageY
 
-            //初速度很小的逻辑处理
-            let flag = false
-            if (Math.abs(speed) <= 1) {
-                flag = true
-            }
-            timer = setInterval(f => {
+            if (iDisY === 0) { // 区分点击和滑动
+                this.index = -e.target.getAttribute('data-index')
+                selector.style.webkitTransitionDuration = '200ms'
+                selector.addEventListener("webkitTransitionEnd", f => {
+                    // touchend事件触发后会有一个动画，触发完成后立即清除transition
+                    selector.style.webkitTransitionDuration = '0ms'
+                })
+                datePicker.setTranslate3d(selector, this.index * this.distance)
+                datePicker.setRotateX(this.obj.children, this.index)
+                this.callback && this.callback(Math.abs(this.index))
+
+            } else { // 滑动
+                //初速度很小的逻辑处理
+                let flag = false
                 if (Math.abs(speed) <= 1) {
-                    clearInterval(timer)
-                    if (flag) {
-                        this.index += Math.round(iDisX / this.distance)
-                    }
-                    this.index = this.index > 0 ? Math.min(this.index, 0) : Math.max(this.index, -length)
-                    this.index = this.index > 0 ? 0 : (this.index < -length ? -length : this.index)
-                    selector.style.webkitTransitionDuration = '400ms'
-                    selector.addEventListener("webkitTransitionEnd", f => {
-                        //touchend事件触发后会有一个动画，触发完成后立即清除transition
-                        selector.style.webkitTransitionDuration = '0ms'
-                    })
-                    Array.prototype.slice.call(selector.children).forEach(ele => {
-                        ele.style.webkitTransitionDuration = '200ms'
-                        ele.addEventListener("webkitTransitionEnd", f => {
-                            ele.style.webkitTransitionDuration = '0ms'
-                        })
-                    })
-                    datePicker.setTranslate3d(selector, this.index * this.distance)
-                    datePicker.setRotateX(this.obj.children, this.index)
-                    this.callback && this.callback(Math.abs(this.index))
-
-                    this.obj.index = Math.abs(this.index)
-                    this.obj.current = Math.abs(this.index)
-                } else {
-                    speed *= 0.2
-                    iDisX += speed
-                    this.index += Math.round(iDisX / this.distance)
+                    flag = true
                 }
-            }, 13);
+                timer = setInterval(f => {
+                    if (Math.abs(speed) <= 1) {
+                        clearInterval(timer)
+                        if (flag) {
+                            this.index += Math.round(iDisY / this.distance)
+                        }
+                        this.index = this.index > 0 ? Math.min(this.index, 0) : Math.max(this.index, -length)
+                        this.index = this.index > 0 ? 0 : (this.index < -length ? -length : this.index)
+                        selector.style.webkitTransitionDuration = '400ms'
+                        selector.addEventListener("webkitTransitionEnd", f => {
+                            //touchend事件触发后会有一个动画，触发完成后立即清除transition
+                            selector.style.webkitTransitionDuration = '0ms'
+                        })
+                        Array.prototype.slice.call(selector.children).forEach(ele => {
+                            ele.style.webkitTransitionDuration = '200ms'
+                            ele.addEventListener("webkitTransitionEnd", f => {
+                                ele.style.webkitTransitionDuration = '0ms'
+                            })
+                        })
+                        datePicker.setTranslate3d(selector, this.index * this.distance)
+                        datePicker.setRotateX(this.obj.children, this.index)
+                        this.callback && this.callback(Math.abs(this.index))
+
+                        this.obj.index = Math.abs(this.index)
+                        this.obj.current = Math.abs(this.index)
+                    } else {
+                        speed *= 0.2
+                        iDisY += speed
+                        this.index += Math.round(iDisY / this.distance)
+                    }
+                }, 13)
+            }
         }
+
         selector.addEventListener("touchstart", touchstart, false)
         selector.addEventListener("touchmove", touchmove, false)
         selector.addEventListener("touchend", touchend, false)
