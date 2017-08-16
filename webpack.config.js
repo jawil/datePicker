@@ -52,6 +52,7 @@ module.exports = {
             from: path.resolve(APP_PATH, './datePicker.css'),
             to: path.resolve(BUILD_PATH)
         }]),
+        new webpack.optimize.ModuleConcatenationPlugin(),
         //热插拔
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
