@@ -9,10 +9,10 @@
  import Picker from './datePicker.js'
 
  const DEFAULT_OPTIONS = {
-     appointDays: 7, //默认可以预约未来7天
-     preTime: 20, //默认只能预约20分钟之后,如果两个小时就填120
-     disMinute: 1, //分钟的间隔，默认一分钟
-     callBack: function(timeStr, timeStamp) { //点击确认获取到的时间戳和时间字符串
+     appointDays: 7, // 默认可以预约未来7天
+     minuteLater: 20, // 默认只能预约20分钟之后,如果两个小时就填120
+     interval: 1, // 分钟的间隔，默认一分钟
+     callBack: function(timeStr, timeStamp) { // 点击确认获取到的时间戳和时间字符串
          console.log(timeStr, timeStamp)
      }
  }
@@ -26,12 +26,11 @@
          return DEFAULT_OPTIONS
      }()
 
-     const
-         callBack = CHOICE_OPTIONS.callBack,
+     const callBack = CHOICE_OPTIONS.callBack,
          app_day = CHOICE_OPTIONS.appointDays,
-         pre_min = CHOICE_OPTIONS.preTime % 60,
-         dis_min = CHOICE_OPTIONS.disMinute,
-         pre_hour = Math.floor(DEFAULT_OPTIONS.preTime / 60)
+         pre_min = CHOICE_OPTIONS.minuteLater % 60,
+         dis_min = CHOICE_OPTIONS.interval,
+         pre_hour = Math.floor(DEFAULT_OPTIONS.minuteLater / 60)
 
      // 符合条件的数据
      let filter = { day: [], hour: [], minute: [] }
@@ -65,23 +64,13 @@
          for (let i = 0; i < app_day; i++) {
              let preStamp = timeStamp + 24 * 60 * 60 * 1000 * i,
                  date = new Date(preStamp),
-                 preYear = date.getFullYear(),
-                 preMonth = date.getMonth() + 1,
-                 preDay = date.getDate()
-             switch (i) {
-                 case 0:
-                     daysArr.push({ text: '今天', year: preYear, month: preMonth, day: preDay })
-                     break
-                 case 1:
-                     daysArr.push({ text: '明天', year: preYear, month: preMonth, day: preDay })
-                     break
-                 case 2:
-                     daysArr.push({ text: '后天', year: preYear, month: preMonth, day: preDay })
-                     break
-                 default:
-                     daysArr.push({ text: `${preMonth}月${preDay}日`, year: preYear, month: preMonth, day: preDay })
-                     break
-             }
+                 year = date.getFullYear(),
+                 month = date.getMonth() + 1,
+                 day = date.getDate()
+
+             let text = ['今天', '明天', '后天', `${month}月${day}日`][i] || `${month}月${day}日`
+
+             daysArr.push({ text: text, year: year, month: month, day: day })
          }
 
          //如果是今天的23:30以后预约车,那么今天的就不能预约
@@ -157,15 +146,15 @@
              wheelHourHtml = '',
              wheelMinuteHtml = ''
 
-         filter.day.forEach(ele => {
+         filter.day.forEach(function(ele) {
              wheelDayHtml += `<li class="wheel-item">${ele.text}</li>`
          })
 
-         filter.hour.forEach(ele => {
+         filter.hour.forEach(function(ele) {
              wheelHourHtml += `<li class="wheel-item">${ele}点</li>`
          })
 
-         filter.minute.forEach(ele => {
+         filter.minute.forEach(function(ele) {
              wheelMinuteHtml += `<li class="wheel-item">${ele}分</li>`
          })
 
@@ -211,13 +200,12 @@
                      start.minuteArr = original.minute
                      new Picker(wheelMinute, index)
                  }
-
              }
          }
      })
 
      // 监测小时的变化，会影响分钟的变化
-     Object.defineProperty(wheelHour, 'current', {
+     Object.defineProperty(wheelHour, 'index', {
          set: function(value) {
 
              selected.hour = start.hourArr[value]
@@ -241,19 +229,17 @@
          }
      })
 
-     Object.defineProperty(wheelMinute, 'current', {
+     Object.defineProperty(wheelMinute, 'index', {
          set: function(value) {
              selected.minute = start.minuteArr[value]
          }
      })
-
 
      function createHTML(ele, arr, unit) {
          let innerHTML = ''
          arr.forEach(item => {
              innerHTML += `<li class="wheel-item">${item+unit}</li>`
          })
-
          ele.innerHTML = innerHTML
      }
 
@@ -286,5 +272,4 @@
      document.querySelector('.mf-picker').addEventListener('touchend', toggle, false)
 
  }
-
  module.exports = datePicker
