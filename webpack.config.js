@@ -2,9 +2,11 @@ const path = require('path')
 const webpack = require("webpack")
 const CleanPlugin = require("clean-webpack-plugin")
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require("copy-webpack-plugin")
 
 //设置输入和输出根目录
 const ROOT_PATH = path.resolve(__dirname)
+const APP_PATH = path.resolve(ROOT_PATH, 'src');
 const BUILD_PATH = path.resolve(__dirname, 'dist')
 
 
@@ -46,6 +48,10 @@ module.exports = {
     },
     plugins: [
         new CleanPlugin([BUILD_PATH]),
+        new CopyWebpackPlugin([{
+            from: path.resolve(APP_PATH, './datePicker.css'),
+            to: path.resolve(BUILD_PATH)
+        }]),
         //热插拔
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({

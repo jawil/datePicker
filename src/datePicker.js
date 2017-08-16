@@ -1,8 +1,7 @@
-//仿IOS日期风格选择器
 module.exports = class datePicker {
-    constructor(obj, initIndex = 0, callback) {
+    constructor(obj, initIndex, callback) {
         this.obj = obj
-        this.index = -initIndex
+        this.index = -initIndex || 0
         this.callback = callback
         this.deg = 25 //初始化偏转的角度
         this.length = this.obj.children.length
@@ -14,7 +13,7 @@ module.exports = class datePicker {
     }
     static setRotateX(obj, index, deg = 25) {
         //设置每个Li的偏转角度
-        Array.from(obj).forEach((ele, i) => {
+        Array.prototype.slice.call(obj).forEach((ele, i) => {
             obj[i].style.webkitTransform = `rotateX(${(i+index)*deg}deg)`
         })
     }
@@ -23,9 +22,9 @@ module.exports = class datePicker {
         datePicker.setTranslate3d(this.obj, this.index * this.distance)
             //初始化3D偏转角度
         datePicker.setRotateX(this.obj.children, this.index)
-        this.bind(this.obj)
+        this.bindEvent(this.obj)
     }
-    bind(selector) {
+    bindEvent(selector) {
         let iStartPageY = 0,
             step = 1, //弹性系数
             prevPoint = 0,
@@ -46,7 +45,8 @@ module.exports = class datePicker {
             let iDisY = (e.changedTouches[0].pageY - iStartPageY)
             speed = (e.changedTouches[0].pageY - prevPoint)
             prevPoint = e.changedTouches[0].pageY
-                //已滑动在头部或尾部,但是用户还想往上或下滑,这是给一种越往上或下滑越难拖动的体验
+
+            //已滑动在头部或尾部,但是用户还想往上或下滑,这是给一种越往上或下滑越难拖动的体验
             if ((this.index == 0 && iDisY > 0) || (this.index == -length && iDisY < 0)) {
                 step = 1 - Math.abs(iDisY) / selector.clientWidth //根据超出长度计算系数大小，超出的越到 系数越小
                 step = Math.max(step, 0) //系数最小值为0
@@ -59,7 +59,8 @@ module.exports = class datePicker {
             e.preventDefault()
             e.stopPropagation()
             let iDisX = e.changedTouches[0].pageY - iStartPageY
-                //初速度很小的逻辑处理
+
+            //初速度很小的逻辑处理
             let flag = false
             if (Math.abs(speed) <= 1) {
                 flag = true
@@ -77,7 +78,7 @@ module.exports = class datePicker {
                         //touchend事件触发后会有一个动画，触发完成后立即清除transition
                         selector.style.webkitTransitionDuration = '0ms'
                     })
-                    Array.from(selector.children).forEach(ele => {
+                    Array.prototype.slice.call(selector.children).forEach(ele => {
                         ele.style.webkitTransitionDuration = '200ms'
                         ele.addEventListener("webkitTransitionEnd", f => {
                             ele.style.webkitTransitionDuration = '0ms'
@@ -86,6 +87,9 @@ module.exports = class datePicker {
                     datePicker.setTranslate3d(selector, this.index * this.distance)
                     datePicker.setRotateX(this.obj.children, this.index)
                     this.callback && this.callback(Math.abs(this.index))
+
+                    this.obj.index = Math.abs(this.index)
+                    this.obj.current = Math.abs(this.index)
                 } else {
                     speed *= 0.2
                     iDisX += speed
