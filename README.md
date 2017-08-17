@@ -14,21 +14,22 @@
 
 1. cd datePicker
 2. npm install
-3. npm run dev
+3. npm run dev(浏览器预览)
 4. npm run build(生成dist目录)
 
 
 #### 示例：
 
  ```JavaScript
+ // UMD兼容规范，支持浏览器直接引入，require，define等多种JS模块化引入
  <script src="dist/date-picker.min.js"></script>
  
  datePicker({
      appointDays: 7, //默认可以预约未来7天
      
-     preTime: 20, //默认只能预约20分钟之后,如果两个小时就填120
+     minuteLater: 20, //默认只能预约20分钟之后,如果两个小时就填120
      
-     disMinute: 1, //分钟的间隔，默认一分钟
+     interval: 1, //分钟的间隔，默认一分钟
 
      callBack: function(timeStr, timeStamp) {//点击确认获取到的时间戳和时间字符串
          console.log(timeStr, timeStamp)
