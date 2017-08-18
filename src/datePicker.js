@@ -1,4 +1,4 @@
-module.exports = class datePicker {
+export default class datePicker {
     constructor(obj, initIndex, callback) {
         this.obj = obj
         this.index = -initIndex || 0
