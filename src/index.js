@@ -9,8 +9,10 @@
  import Picker from './datePicker.js'
 
  const DEFAULT_OPTIONS = {
+     afterDay: 0, // 第几天后开始可以预约，默认是今天
      appointDays: 7, // 默认可以预约未来7天
-     minuteLater: 20, // 默认只能预约20分钟之后,如果两个小时就填120
+     minuteLater: 20, // 当天的话，默认只能预约20分钟之后,如果两个小时就填120
+     hourArea: [9, 22], // 预约小时可选的范围，默认是9：00-22：00
      interval: 1, // 分钟的间隔，默认一分钟
      callBack: function(timeStr, timeStamp) { // 点击确认获取到的时间戳和时间字符串
          console.log(timeStr, timeStamp)
@@ -26,23 +28,43 @@
          return DEFAULT_OPTIONS
      }()
 
-     const callBack = CHOICE_OPTIONS.callBack,
+     let callBack = CHOICE_OPTIONS.callBack,
          app_day = CHOICE_OPTIONS.appointDays,
+         after_day = CHOICE_OPTIONS.afterDay,
+         hour_area = CHOICE_OPTIONS.hourArea,
          pre_min = CHOICE_OPTIONS.minuteLater % 60,
          dis_min = CHOICE_OPTIONS.interval,
          pre_hour = Math.floor(DEFAULT_OPTIONS.minuteLater / 60)
 
      // 符合条件的数据
-     let filter = { day: [], hour: [], minute: [] }
+     let filter = {
+         day: [],
+         hour: [],
+         minute: []
+     }
 
      // 原始数据
-     let original = { day: [], hour: [], minute: [] }
+     let original = {
+         day: [],
+         hour: [],
+         minute: []
+     }
 
      // 用户最终选择的日期
-     let selected = { year: '', day: '', hour: '', minute: '' }
+     let selected = {
+         year: '',
+         day: '',
+         hour: '',
+         minute: ''
+     }
 
      // 开头第一个符合条件的日期
-     let start = { hour: '', minute: '', hourArr: [], minuteArr: [] }
+     let start = {
+         hour: '',
+         minute: '',
+         hourArr: [],
+         minuteArr: []
+     }
 
      //初始化日期,获得当前日期
      const current = function() {
@@ -61,7 +83,7 @@
      filter.day = function() {
          let timeStamp = Date.now(),
              daysArr = []
-         for (let i = 0; i < app_day; i++) {
+         for (let i = after_day; i < app_day; i++) {
              let preStamp = timeStamp + 24 * 60 * 60 * 1000 * i,
                  date = new Date(preStamp),
                  year = date.getFullYear(),
@@ -70,7 +92,12 @@
 
              let text = ['今天', '明天', '后天', `${month}月${day}日`][i] || `${month}月${day}日`
 
-             daysArr.push({ text: text, year: year, month: month, day: day })
+             daysArr.push({
+                 text: text,
+                 year: year,
+                 month: month,
+                 day: day
+             })
          }
 
          //如果是今天的23:30以后预约车,那么今天的就不能预约
@@ -82,7 +109,13 @@
 
      // 获取符合条件的预约小时数
      filter.hour = function() {
-         let hoursArr = []
+         let hoursArr = [],
+             hour
+
+         if (current.hour < hour_area[0]) { // 如果当前时间小于预约时间最低范围，那么任意分钟都可以预约
+             pre_min = 0
+         }
+
          for (let i = current.hour; i < 24; i++) {
              hoursArr.push(i)
              start.hourArr.push(i)
@@ -123,12 +156,22 @@
 
      // 初始化数据
      const initData = function() {
-         for (let h = 0; h < 24; h++) {
+         for (let h = hour_area[0]; h <= hour_area[1]; h++) {
              original.hour.push(h)
          }
          for (let m = 0; m < 60; m += dis_min) {
              original.minute.push(m)
          }
+
+         if (after_day) { // 如果不是预约今天的
+             filter.hour = JSON.parse(JSON.stringify(original.hour))
+             filter.minute = JSON.parse(JSON.stringify(original.minute))
+         }
+
+         if (current.hour < hour_area[0]) { // 当前小时小于预约时间，那么分钟就随意
+             filter.minute = JSON.parse(JSON.stringify(original.minute))
+         }
+
          selected.day = filter.day[0]
          selected.hour = start.hour = filter.hour[0]
          selected.minute = start.minute = filter.minute[0]
@@ -153,7 +196,7 @@
          filter.hour.forEach(function(ele, index) {
              wheelHourHtml += `<li class="wheel-item" data-index=${index}>${ele}点</li>`
          })
-
+         console.log(filter.hour)
          filter.minute.forEach(function(ele, index) {
              wheelMinuteHtml += `<li class="wheel-item" data-index=${index}>${ele}分</li>`
          })
@@ -169,7 +212,7 @@
 
      Object.defineProperty(wheelDay, 'index', {
          set: function(value) {
-             if (value !== 0) { //当前预约时间不是今天
+             if (value !== 0 || after_day) { //当前预约时间不是今天
 
                  createHTML(wheelHour, original.hour, '点')
                  createHTML(wheelMinute, original.minute, '分')
@@ -210,7 +253,7 @@
 
              selected.hour = start.hourArr[value]
 
-             if (value !== 0 || wheelDay.current) { //时间不是此刻，分钟可以任意选择
+             if (value !== 0 || wheelDay.current || after_day) { //时间不是此刻，分钟可以任意选择
 
                  let index = original.minute.indexOf(selected.minute)
                  createHTML(wheelMinute, original.minute, '分')
@@ -237,7 +280,7 @@
 
      function createHTML(ele, arr, unit) {
          let innerHTML = ''
-         arr.forEach(function(item,index) {
+         arr.forEach(function(item, index) {
              innerHTML += `<li class="wheel-item" data-index=${index}>${item+unit}</li>`
          })
          ele.innerHTML = innerHTML

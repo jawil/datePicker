@@ -70,6 +70,8 @@ export default class datePicker {
                 })
                 datePicker.setTranslate3d(selector, this.index * this.distance)
                 datePicker.setRotateX(this.obj.children, this.index)
+                this.obj.index = Math.abs(this.index)
+                this.obj.current = Math.abs(this.index)
                 this.callback && this.callback(Math.abs(this.index))
 
             } else { // 滑动

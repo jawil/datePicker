@@ -25,15 +25,19 @@
  <script src="dist/date-picker.min.js"></script>
  
  datePicker({
-     appointDays: 7, //默认可以预约未来7天
+     afterDay: 0, // 第几天后开始可以预约，默认是今天
      
-     minuteLater: 20, //默认只能预约20分钟之后,如果两个小时就填120
+     appointDays: 7, // 默认可以预约未来7天
      
-     interval: 1, //分钟的间隔，默认一分钟
-
-     callBack: function(timeStr, timeStamp) {//点击确认获取到的时间戳和时间字符串
+     minuteLater: 20, // 当天的话，默认只能预约20分钟之后,如果两个小时就填120
+     
+     hourArea: [9, 22], // 预约小时可选的范围，默认是9：00-22：00
+     
+     interval: 1, // 分钟的间隔，默认一分钟
+     
+     callBack: function(timeStr, timeStamp) { // 点击确认获取到的时间戳和时间字符串
          console.log(timeStr, timeStamp)
-     }Ï
+     }
      
  })
  ```
