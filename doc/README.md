@@ -46,7 +46,7 @@
 
 #### 效果图
 
-<img src="http://oo2r9rnzp.bkt.clouddn.com/WX20170411-212505@2x.png" width="50%" height="50%">
+![](http://oo2r9rnzp.bkt.clouddn.com/WX20170411-212505@2x.png)
 
 
 **有问题可以邮件联系我，欢迎提Issue和Pre**
