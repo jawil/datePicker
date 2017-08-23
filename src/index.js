@@ -144,7 +144,7 @@
              minutesArr.push(i)
              start.minuteArr.push(i)
          }
-         //如果分钟没有满足条件的,说明现在已经30分以后,小时会自动加1
+         // 如果分钟没有满足条件的,说明现在已经30分以后,小时会自动加1
          if (!minutesArr.length) {
              for (let i = Math.ceil((current.minute + pre_min - 60) / dis_min) * dis_min; i < 60; i += dis_min) {
                  minutesArr.push(i)
@@ -196,7 +196,7 @@
          filter.hour.forEach(function(ele, index) {
              wheelHourHtml += `<li class="wheel-item" data-index=${index}>${ele}点</li>`
          })
-         console.log(filter.hour)
+         
          filter.minute.forEach(function(ele, index) {
              wheelMinuteHtml += `<li class="wheel-item" data-index=${index}>${ele}分</li>`
          })
