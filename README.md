@@ -46,7 +46,7 @@
 
 #### 效果图
 
-![](http://oo2r9rnzp.bkt.clouddn.com/WX20170411-212505@2x.png)
+![](https://ws4.sinaimg.cn/large/006tNc79gy1fitlr3tyhwj30av0jemyb.jpg)
 
 
 **有问题可以邮件联系我，欢迎提Issue和Pre**
