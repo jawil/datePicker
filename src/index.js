@@ -14,6 +14,7 @@
      minuteLater: 20, // 当天的话，默认只能预约20分钟之后,如果两个小时就填120
      hourArea: [9, 22], // 预约小时可选的范围，默认是9：00-22：00
      interval: 1, // 分钟的间隔，默认一分钟
+     initStrDate:'', //初始化时间 2018-12-25: 18:00:00
      callBack: function(timeStr, timeStamp) { // 点击确认获取到的时间戳和时间字符串
          console.log(timeStr, timeStamp)
      }
@@ -68,7 +69,12 @@
 
      //初始化日期,获得当前日期
      const current = function() {
-         let date = new Date()
+        let date = new Date()
+
+        if(CHOICE_OPTIONS.initStrDate){
+            date = new Date(CHOICE_OPTIONS.initStrDate);
+        }
+         
          return {
              year: date.getFullYear(),
              month: date.getMonth() + 1,
@@ -213,7 +219,6 @@
      Object.defineProperty(wheelDay, 'index', {
          set: function(value) {
              if (value !== 0 || after_day) { //当前预约时间不是今天
-
                  createHTML(wheelHour, original.hour, '点')
                  createHTML(wheelMinute, original.minute, '分')
                  start.hourArr = original.hour
@@ -224,7 +229,6 @@
                  new Picker(wheelMinute, minuIndex)
 
              } else { //当前预约时间是今天
-
                  createHTML(wheelHour, filter.hour, '点')
                  start.hourArr = filter.hour
                  let index = selected.hour < start.hour ? 0 : filter.hour.indexOf(selected.hour)
