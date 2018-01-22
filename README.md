@@ -34,7 +34,7 @@
      hourArea: [9, 22], // 预约小时可选的范围，默认是9：00-22：00
      
      interval: 1, // 分钟的间隔，默认一分钟
-     
+     initStrDate:'', //初始化时间 2018-12-25: 18:00:00
      callBack: function(timeStr, timeStamp) { // 点击确认获取到的时间戳和时间字符串
          console.log(timeStr, timeStamp)
      }
